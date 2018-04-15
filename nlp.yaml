@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nlp-deployment
+spec:
+  selector:
+    matchLabels:
+      app: nlp
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nlp
+        run: gendermeme
+    spec:
+      containers:
+      - name: nlp-container
+        image: joeybones/corenlp
+        ports:
+        - containerPort: 9000
+        resources:
+          requests:
+            cpu: .5
+            memory: 4G
+          limits:
+            cpu: 1.1
+            memory: 8G
+      nodeSelector:
+        service-type: nlp

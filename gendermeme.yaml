@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gendermeme-deployment
+spec:
+  selector:
+    matchLabels:
+      app: gm-python
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: gm-python
+        run: gendermeme
+    spec:
+      containers:
+      - name: gm-python-container
+        image: joeybones/gendermeme
+        env:
+        - name: CORENLP_HOSTNAME
+          value: "gm-service"
+        - name: CORENLP_PORT
+          value: "80"
+        - name: GENDERMEME_PORT
+          value: "5000"
+        ports:
+        - containerPort: 5000
+      nodeSelector:
+        service-type: analysis
