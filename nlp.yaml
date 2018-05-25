@@ -25,5 +25,33 @@ spec:
           limits:
             cpu: 1.1
             memory: 8G
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 9000
+          periodSeconds: 120
+          initialDelaySeconds: 10
+          timeoutSeconds: 15
+
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 9000
+          periodSeconds: 120
+          initialDelaySeconds: 10
+          timeoutSeconds: 15
       nodeSelector:
         service-type: nlp
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: gendermeme-service
+spec:
+  selector:
+    app: nlp
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 9000

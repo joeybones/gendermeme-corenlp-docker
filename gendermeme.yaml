@@ -14,6 +14,36 @@ spec:
         run: gendermeme
     spec:
       containers:
+      - name: esp
+        image: gcr.io/endpoints-release/endpoints-runtime:1
+        args: [
+          "-p", "80",
+          "-a", "127.0.0.1:5000",
+          "-s", "gendermeme.endpoints.nyt-cms-dev.cloud.goog",
+          "-v", "2018-05-24r0",
+        ]
+        ports:
+        - containerPort: 80
+
+        # Configure health checks
+        # As far as we know, existing ingresses won't pick up changes on the readiness probe, you'll
+        # need to delete and re-deploy the ingress after making any changes on the probe.
+        # https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
+        livenessProbe:
+          httpGet:
+            path: /check
+            port: 5000
+          periodSeconds: 120
+          initialDelaySeconds: 10
+          timeoutSeconds: 15
+
+        readinessProbe:
+          httpGet:
+            path: /check
+            port: 5000
+          periodSeconds: 120
+          initialDelaySeconds: 10
+          timeoutSeconds: 15
       - name: gm-python-container
         image: joeybones/gendermeme
         env:
@@ -27,3 +57,20 @@ spec:
         - containerPort: 5000
       nodeSelector:
         service-type: analysis
+
+---
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: gendermeme-frontend
+
+spec:
+  type: NodePort
+  selector:
+    app: nlp
+  ports:
+    - name: http
+      port: 80
+      targetPort: 5000
+      protocol: TCP
