@@ -24,11 +24,6 @@ spec:
         ]
         ports:
         - containerPort: 80
-
-        # Configure health checks
-        # As far as we know, existing ingresses won't pick up changes on the readiness probe, you'll
-        # need to delete and re-deploy the ingress after making any changes on the probe.
-        # https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
         livenessProbe:
           httpGet:
             path: /check
