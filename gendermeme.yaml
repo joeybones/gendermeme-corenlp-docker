@@ -14,16 +14,6 @@ spec:
         run: gendermeme
     spec:
       containers:
-      - name: esp
-        image: gcr.io/endpoints-release/endpoints-runtime:1
-        args: [
-          "-p", "80",
-          "-a", "127.0.0.1:5000",
-          "-s", "gendermeme.endpoints.nyt-cms-dev.cloud.goog",
-          "-v", "2018-05-24r0",
-        ]
-        ports:
-        - containerPort: 80
         livenessProbe:
           httpGet:
             path: /check
@@ -31,7 +21,6 @@ spec:
           periodSeconds: 120
           initialDelaySeconds: 10
           timeoutSeconds: 15
-
         readinessProbe:
           httpGet:
             path: /check
@@ -59,6 +48,8 @@ kind: Service
 
 metadata:
   name: gendermeme-frontend
+  annotations:
+    cloud.google.com/load-balancer-type: "Internal"
 
 spec:
   type: LoadBalancer
