@@ -32,7 +32,6 @@ spec:
           periodSeconds: 120
           initialDelaySeconds: 10
           timeoutSeconds: 15
-
         readinessProbe:
           httpGet:
             path: /
