@@ -14,6 +14,17 @@ spec:
         run: gendermeme
     spec:
       containers:
+      - name: gm-python-container
+        image: joeybones/gendermeme
+        env:
+        - name: CORENLP_HOSTNAME
+          value: "gm-service"
+        - name: CORENLP_PORT
+          value: "80"
+        - name: GENDERMEME_PORT
+          value: "5000"
+        ports:
+        - containerPort: 5000
         livenessProbe:
           httpGet:
             path: /check
@@ -28,17 +39,6 @@ spec:
           periodSeconds: 120
           initialDelaySeconds: 10
           timeoutSeconds: 15
-      - name: gm-python-container
-        image: joeybones/gendermeme
-        env:
-        - name: CORENLP_HOSTNAME
-          value: "gm-service"
-        - name: CORENLP_PORT
-          value: "80"
-        - name: GENDERMEME_PORT
-          value: "5000"
-        ports:
-        - containerPort: 5000
       nodeSelector:
         service-type: analysis
 
